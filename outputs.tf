@@ -15,6 +15,6 @@
  */
 
 output "storage_pool" {
-  value = google_netapp_storage_pool.storage_pool
+  value       = google_netapp_storage_pool.storage_pool
   description = "Storage Pool created"
 }

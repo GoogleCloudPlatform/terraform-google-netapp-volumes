@@ -11,7 +11,9 @@ This example illustrates how to use the `netapp-volume` module.
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| netapp\_volumes | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

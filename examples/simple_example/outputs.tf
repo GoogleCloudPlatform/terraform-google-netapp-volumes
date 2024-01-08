@@ -13,3 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+output "netapp_volumes" {
+  value = module.netapp_volumes
+}

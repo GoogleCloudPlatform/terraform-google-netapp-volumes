@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "netapp_volume" {
+module "netapp_volumes" {
   source = "../../"
 
   project_id         = var.project_id

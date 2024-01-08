@@ -73,7 +73,9 @@ Functional examples are included in the
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| storage\_pool | Storage Pool created |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
