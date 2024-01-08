@@ -15,8 +15,17 @@
  */
 
 module "netapp_volume" {
-  source = "../.."
+  source = "../../"
 
-  project_id  = var.project_id
-  bucket_name = var.bucket_name
+  project_id         = var.project_id
+  location           = "us-central1"
+  pool_name          = "test-pool"
+  storage_pool_size  = "2048"
+  service_level      = "PREMIUM"
+  ad_domain          = "ad.internal"
+  ad_dns             = "172.30.64.3"
+  network_name       = "vpc-net-netapp"
+  ad_net_bios_prefix = "smbserver"
+  ad_username        = "user"
+  ad_password        = "password"
 }
