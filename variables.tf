@@ -24,6 +24,12 @@ variable "location" {
   type        = string
 }
 
+variable "common_labels" {
+  description = "Common Labels as key value pairs for all the resources"
+  type        = map(any)
+  default     = {}
+}
+
 variable "pool_name" {
   description = "The resource name of the storage pool. Needs to be unique per location"
   type        = string
@@ -67,26 +73,31 @@ variable "ad_description" {
 variable "ad_domain" {
   description = "Fully qualified domain name for the Active Directory domain"
   type        = string
+  default = null
 }
 
 variable "ad_dns" {
   description = "Comma separated list of DNS server IP addresses for the Active Directory domain"
   type        = string
+  default = null
 }
 
 variable "ad_net_bios_prefix" {
   description = "NetBIOS name prefix of the server to be created"
   type        = string
+  default = null
 }
 
 variable "ad_username" {
   description = "Username for the Active Directory account with permissions to create the compute account within the specified organizational unit"
   type        = string
+  default = null
 }
 
 variable "ad_password" {
   description = "Password for specified username. Note - Manual changes done to the password will not be detected. Terraform will not re-apply the password, unless you use a new password in Terraform. Note: This property is sensitive and will not be displayed in the plan"
   type        = string
+  default = null
 }
 
 variable "ad_aes_encryption" {
@@ -166,6 +177,12 @@ variable "network_name" {
   type        = string
 }
 
+variable "create_backup_vault" {
+  description = "Create backup valut or not"
+  type        = bool
+  default     = false
+}
+
 variable "backup_vault_name" {
   description = "The resource name of the backup vault. Needs to be unique per location"
   type        = string
@@ -184,9 +201,46 @@ variable "backup_vault_labels" {
   default     = {}
 }
 
-variable "common_labels" {
-  description = "Common Labels as key value pairs for all the resources"
+variable "kms_config_name" {
+  description = "Name of the CMEK policy"
+  type        = string
+  default     = null
+}
+
+variable "kms_config_description" {
+  description = "Description for the CMEK policy"
+  type        = string
+  default     = null
+}
+
+variable "kms_config_crypto_key_id" {
+  description = "Resource name of the KMS key to use. Only regional keys are supported. Format: projects/{{project}}/locations/{{location}}/keyRings/{{key_ring}}/cryptoKeys/{{key}}"
+  type        = string
+  default     = null
+}
+
+variable "volume_name" {
+  description = "The name of the volume. Needs to be unique per location"
+  type        = string
+}
+
+variable "volume_size" {
+  description = "Capacity of the volume (in GiB)"
+  type        = number
+}
+
+variable "volume_share_name" {
+  description = "Share name (SMB) or export path (NFS) of the volume. Needs to be unique per location"
+  type        = string
+}
+
+variable "protocols" {
+  description = "The protocol of the volume. Allowed combinations are ['NFSV3'], ['NFSV4'], ['SMB'], ['NFSV3', 'NFSV4'], ['SMB', 'NFSV3'] and ['SMB', 'NFSV4']. Each value may be one of: NFSV3, NFSV4, SMB"
+  type        = list(any)
+}
+
+variable "volume_labels" {
+  description = "Storage volume labels as key value pairs"
   type        = map(any)
   default     = {}
 }
-

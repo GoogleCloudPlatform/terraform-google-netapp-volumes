@@ -19,6 +19,7 @@ locals {
   backup_vault_name       = var.backup_vault_name != null ? var.backup_vault_name : "${var.pool_name}-${var.location}-vault-backup"
   backup_vault_labels     = merge(var.common_labels, var.backup_vault_labels)
   pool_labels             = merge(var.common_labels, var.pool_labels)
+  volume_labels           = merge(var.common_labels, var.volume_labels)
   active_directory_labels = merge(var.common_labels, var.ad_labels)
 }
 
@@ -66,9 +67,31 @@ resource "google_netapp_active_directory" "active_directory" {
 }
 
 resource "google_netapp_backup_vault" "backup_vault" {
+  count       = var.create_backup_vault ? 1 : 0
   project     = var.project_id
   name        = local.backup_vault_name
   location    = var.location
   description = var.backup_vault_description
   labels      = local.backup_vault_labels
+}
+
+resource "google_netapp_kmsconfig" "kms_config" {
+  provider        = google-beta
+  count           = var.kms_config_name == null ? 0 : 1
+  project         = var.project_id
+  name            = var.kms_config_name
+  description     = var.kms_config_description
+  crypto_key_name = var.kms_config_crypto_key_id
+  location        = var.location
+}
+
+resource "google_netapp_volume" "test_volume" {
+  project      = var.project_id
+  location     = var.location
+  name         = var.volume_name
+  capacity_gib = var.volume_size
+  share_name   = var.volume_share_name
+  storage_pool = google_netapp_storage_pool.storage_pool.name
+  protocols    = var.protocols
+  labels       = local.volume_labels
 }

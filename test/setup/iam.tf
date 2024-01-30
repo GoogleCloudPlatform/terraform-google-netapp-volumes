@@ -16,14 +16,19 @@
 
 locals {
   int_required_roles = [
-    "roles/owner"
+    "roles/netapp.admin",
+    "roles/compute.admin",
+    "roles/compute.networkAdmin",
+    "roles/cloudkms.admin",
+    "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+    "roles/iam.roleAdmin",
   ]
 }
 
 resource "google_service_account" "int_test" {
   project      = module.project.project_id
-  account_id   = "ci-account"
-  display_name = "ci-account"
+  account_id   = "ci-netapp"
+  display_name = "ci-netapp"
 }
 
 resource "google_project_iam_member" "int_test" {

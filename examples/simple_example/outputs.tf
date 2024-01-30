@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+
 output "netapp_volumes" {
   value = module.netapp_volumes
+}
+
+output "project_id" {
+  value = var.project_id
+}
+
+output "kms_key_id" {
+  value       = google_kms_crypto_key.crypto_key.id
+  description = "KMS key for kms config profile"
 }

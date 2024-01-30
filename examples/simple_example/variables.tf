@@ -18,3 +18,16 @@ variable "project_id" {
   description = "The ID of the project in which to provision resources."
   type        = string
 }
+
+variable "network_name" {
+  description = "The ID of the network in which to provision resources."
+  type        = string
+  default     = "simple-netapp"
+}
+
+
+variable "region" {
+  default     = "us-central1"
+  description = "The region for primary cluster"
+  type        = string
+}
