@@ -20,7 +20,7 @@ output "storage_pool" {
 }
 
 output "active_directory_id" {
-  value       = var.ldap_enabled ? google_netapp_active_directory.active_directory[0].id : null
+  value       = try(google_netapp_active_directory.active_directory[0].id, null)
   description = "ID of Active Directory configuration"
 }
 
@@ -37,4 +37,9 @@ output "kms_config_service_account" {
 output "kms_config_instructions" {
   value       = google_netapp_kmsconfig.kms_config[0].instructions
   description = "Access to the key needs to be granted. The instructions contain gcloud commands to run to grant access. To make the policy work, a CMEK policy check is required, which verifies key access"
+}
+
+output "storage_volume" {
+  value       = google_netapp_volume.test_volume
+  description = "Storage Volume created"
 }

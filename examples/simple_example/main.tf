@@ -35,6 +35,7 @@ resource "google_compute_global_address" "private_ip_alloc" {
   name          = "psa"
   address_type  = "INTERNAL"
   purpose       = "VPC_PEERING"
+  address       = "10.10.0.0"
   prefix_length = 16
   network       = google_compute_network.default.id
 }
@@ -45,6 +46,7 @@ resource "google_service_networking_connection" "vpc_connection" {
   reserved_peering_ranges = [
     google_compute_global_address.private_ip_alloc.name,
   ]
+  deletion_policy = "ABANDON"
 }
 
 resource "google_compute_global_address" "netapp_private_svc_ip" {
@@ -52,7 +54,8 @@ resource "google_compute_global_address" "netapp_private_svc_ip" {
   name          = "netapp-psa"
   address_type  = "INTERNAL"
   purpose       = "VPC_PEERING"
-  prefix_length = 20
+  address       = "10.11.0.0"
+  prefix_length = 16
   network       = google_compute_network.default.id
 }
 
@@ -62,7 +65,10 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
   reserved_peering_ranges = [
     google_compute_global_address.netapp_private_svc_ip.name,
   ]
-  depends_on = [google_service_networking_connection.vpc_connection  ]
+  depends_on = [
+    google_service_networking_connection.vpc_connection
+  ]
+  deletion_policy = "ABANDON"
 }
 
 resource "random_id" "suffix" {
@@ -101,16 +107,32 @@ module "netapp_volumes" {
   kms_config_name          = "netapp-kms-policy"
   kms_config_crypto_key_id = google_kms_crypto_key.crypto_key.id
 
-  volume_name = "test-volume"
+  volume_name       = "test-volume"
   volume_share_name = "test-volume"
-  volume_size = "100"
-  protocols = ["NFSV3"]
+  volume_size       = "100"
+  protocols         = ["NFSV3"]
+  volume_snapshot_policy = {
+    enabled = true
+    daily_schedule = {
+      snapshots_to_keep = 1
+      minute            = 45
+      hour              = 23
+    }
+  }
+
+  export_policy_rules = {
+    test = {
+      allowed_clients = "10.0.0.0/24,10.100.0.0/24"
+      access_type = "READ_WRITE"
+      nfsv3 = true
+      has_root_access = true
+    }
+  }
 
 
   depends_on = [
     google_service_networking_connection.vpc_connection,
-    # google_service_networking_connection.netapp_vpc_connection,
-    # google_kms_crypto_key_iam_member.crypto_key
+    google_service_networking_connection.netapp_vpc_connection,
   ]
 }
 

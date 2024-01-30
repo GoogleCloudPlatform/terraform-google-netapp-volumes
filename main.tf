@@ -86,12 +86,75 @@ resource "google_netapp_kmsconfig" "kms_config" {
 }
 
 resource "google_netapp_volume" "test_volume" {
-  project      = var.project_id
-  location     = var.location
-  name         = var.volume_name
-  capacity_gib = var.volume_size
-  share_name   = var.volume_share_name
-  storage_pool = google_netapp_storage_pool.storage_pool.name
-  protocols    = var.protocols
-  labels       = local.volume_labels
+  project            = var.project_id
+  location           = var.location
+  name               = var.volume_name
+  capacity_gib       = var.volume_size
+  share_name         = var.volume_share_name
+  storage_pool       = google_netapp_storage_pool.storage_pool.name
+  protocols          = var.protocols
+  labels             = local.volume_labels
+  smb_settings       = var.volume_smb_settings
+  unix_permissions   = var.volume_unix_permissions
+  description        = var.volume_description
+  snapshot_directory = var.volume_snapshot_directory
+  security_style     = var.volume_security_style
+  kerberos_enabled   = var.volume_kerberos_enabled
+  restricted_actions = var.volume_restricted_actions
+
+  dynamic "snapshot_policy" {
+    for_each = var.volume_snapshot_policy.enabled ? ["volume_snapshot_policy"] : []
+    content {
+      enabled = var.volume_snapshot_policy.enabled
+      dynamic "hourly_schedule" {
+        for_each = var.volume_snapshot_policy.hourly_schedule == null ? [] : ["hourly_schedule"]
+        content {
+          snapshots_to_keep = lookup(var.volume_snapshot_policy.hourly_schedule, "snapshots_to_keep")
+          minute            = lookup(var.volume_snapshot_policy.hourly_schedule, "minute")
+        }
+      }
+
+      dynamic "daily_schedule" {
+        for_each = var.volume_snapshot_policy.daily_schedule == null ? [] : ["daily_schedule"]
+        content {
+          snapshots_to_keep = lookup(var.volume_snapshot_policy.daily_schedule, "snapshots_to_keep")
+          minute            = lookup(var.volume_snapshot_policy.daily_schedule, "minute")
+          hour              = lookup(var.volume_snapshot_policy.daily_schedule, "hour")
+        }
+      }
+
+      dynamic "weekly_schedule" {
+        for_each = var.volume_snapshot_policy.weekly_schedule == null ? [] : ["weekly_schedule"]
+        content {
+          snapshots_to_keep = lookup(var.volume_snapshot_policy.weekly_schedule, "snapshots_to_keep")
+          minute            = lookup(var.volume_snapshot_policy.weekly_schedule, "minute")
+          hour              = lookup(var.volume_snapshot_policy.weekly_schedule, "hour")
+          day               = lookup(var.volume_snapshot_policy.weekly_schedule, "day")
+        }
+      }
+
+    }
+  }
+
+  dynamic "export_policy" {
+    for_each = var.export_policy_rules == null ? [] : ["export_policy_rules"]
+    content {
+      dynamic "rules" {
+        for_each = var.export_policy_rules == null ? {} : var.export_policy_rules
+        content {
+          allowed_clients       = lookup(rules.value, "allowed_clients")
+          has_root_access       = lookup(rules.value, "has_root_access")
+          access_type           = lookup(rules.value, "access_type")
+          nfsv3                 = lookup(rules.value, "nfsv3")
+          nfsv4                 = lookup(rules.value, "nfsv4")
+          kerberos5_read_only   = lookup(rules.value, "kerberos5_read_only")
+          kerberos5_read_write  = lookup(rules.value, "kerberos5_read_write")
+          kerberos5i_read_only  = lookup(rules.value, "kerberos5i_read_only")
+          kerberos5i_read_write = lookup(rules.value, "kerberos5i_read_write")
+          kerberos5p_read_only  = lookup(rules.value, "kerberos5p_read_only")
+          kerberos5p_read_write = lookup(rules.value, "kerberos5p_read_write")
+        }
+      }
+    }
+  }
 }

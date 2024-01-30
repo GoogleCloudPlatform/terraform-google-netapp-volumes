@@ -73,31 +73,31 @@ variable "ad_description" {
 variable "ad_domain" {
   description = "Fully qualified domain name for the Active Directory domain"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "ad_dns" {
   description = "Comma separated list of DNS server IP addresses for the Active Directory domain"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "ad_net_bios_prefix" {
   description = "NetBIOS name prefix of the server to be created"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "ad_username" {
   description = "Username for the Active Directory account with permissions to create the compute account within the specified organizational unit"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "ad_password" {
   description = "Password for specified username. Note - Manual changes done to the password will not be detected. Terraform will not re-apply the password, unless you use a new password in Terraform. Note: This property is sensitive and will not be displayed in the plan"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "ad_aes_encryption" {
@@ -243,4 +243,90 @@ variable "volume_labels" {
   description = "Storage volume labels as key value pairs"
   type        = map(any)
   default     = {}
+}
+
+variable "export_policy_rules" {
+  description = "Storage volume labels as key value pairs"
+  type = map(object({
+    allowed_clients       = optional(string)
+    has_root_access       = optional(string)
+    access_type           = optional(string) #Possible values are: READ_ONLY, READ_WRITE, READ_NONE
+    nfsv3                 = optional(bool)
+    nfsv4                 = optional(bool)
+    kerberos5_read_only   = optional(bool)
+    kerberos5_read_write  = optional(bool)
+    kerberos5i_read_only  = optional(bool)
+    kerberos5i_read_write = optional(bool)
+    kerberos5p_read_only  = optional(bool)
+    kerberos5p_read_write = optional(bool)
+  }))
+  default = null
+}
+
+variable "volume_smb_settings" {
+  description = "Settings for volumes with SMB access. Each value may be one of: ENCRYPT_DATA, BROWSABLE, CHANGE_NOTIFY, NON_BROWSABLE, OPLOCKS, SHOW_SNAPSHOT, SHOW_PREVIOUS_VERSIONS, ACCESS_BASED_ENUMERATION, CONTINUOUSLY_AVAILABLE"
+  type        = list(string)
+  default     = null
+}
+
+variable "volume_unix_permissions" {
+  description = "Unix permission the mount point will be created with. Default is 0770. Applicable for UNIX security style volumes only"
+  type        = string
+  default     = null
+}
+
+variable "volume_description" {
+  description = "An optional description of the volume"
+  type        = string
+  default     = null
+}
+
+variable "volume_snapshot_directory" {
+  description = "If enabled, a NFS volume will contain a read-only .snapshot directory which provides access to each of the volume's snapshots. Will enable `Previous Versions` support for SMB"
+  type        = bool
+  default     = null
+}
+
+variable "volume_security_style" {
+  description = " Security Style of the Volume. Use UNIX to use UNIX or NFSV4 ACLs for file permissions. Use NTFS to use NTFS ACLs for file permissions. Can only be set for volumes which use SMB together with NFS as protocol. Possible values are: NTFS, UNIX"
+  type        = string
+  default     = null
+}
+
+variable "volume_kerberos_enabled" {
+  description = "Flag indicating if the volume is a kerberos volume or not, export policy rules control kerberos security modes (krb5, krb5i, krb5p)"
+  type        = bool
+  default     = null
+}
+
+variable "volume_restricted_actions" {
+  description = "List of actions that are restricted on this volume. Each value may be one of: DELETE"
+  type        = list(string)
+  default     = null
+}
+
+variable "volume_snapshot_policy" {
+  description = "Snapshot policy defines the schedule for automatic snapshot creation"
+  type = object({
+    enabled = optional(bool, false)
+    hourly_schedule = optional(object({
+      snapshots_to_keep = optional(number)
+      minute            = optional(number)
+    }), null)
+
+    daily_schedule = optional(object({
+      snapshots_to_keep = optional(number)
+      minute            = optional(number)
+      hour              = optional(number)
+    }), null)
+
+    weekly_schedule = optional(object({
+      snapshots_to_keep = optional(number)
+      minute            = optional(number)
+      hour              = optional(number)
+      day               = optional(string)
+    }), null)
+
+  })
+  default = { enabled = false }
 }
