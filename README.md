@@ -1,4 +1,4 @@
-# terraform-google-netapp-volume
+# terraform-google-netapp-volumes
 
 ## Description
 This module makes it easy to setup [NetApp Volumes](https://cloud.google.com/netapp/volumes/docs/discover/overview). It is designed to deploy [Stroage Pool](https://cloud.google.com/netapp/volumes/docs/configure-and-use/storage-pools/overview) and [Storage Volume](https://cloud.google.com/netapp/volumes/docs/configure-and-use/volumes/overview). Creation of Storage Pool is optional. Module can create Storage Volme(s) in an existing storage pool.
