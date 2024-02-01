@@ -71,27 +71,14 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
   deletion_policy = "ABANDON"
 }
 
-# resource "random_id" "suffix" {
-#   byte_length = 4
-# }
-
-# resource "google_kms_key_ring" "keyring" {
-#   name     = "netapp-key-ring-${random_id.suffix.hex}"
-#   location = var.region
-#   project  = var.project_id
-# }
-
-# resource "google_kms_crypto_key" "crypto_key" {
-#   name     = "netapp-crypto-name"
-#   key_ring = google_kms_key_ring.keyring.id
-#   # rotation_period = "100000s"
-# }
+## Example for creating Storage Pool and Volumes
 
 module "netapp_volumes" {
-  source = "../.."
+  source = "googlestaging/netapp-volumes/google"
 
   project_id = var.project_id
   location   = var.region
+
   storege_pool = {
     create_pool   = true
     name          = "test-pool"
@@ -104,24 +91,11 @@ module "netapp_volumes" {
     }
     description = "test pool"
   }
-  # pool_name          = "test-pool"
-  # storage_pool_size  = "2048"
-  # service_level      = "PREMIUM"
-  # ad_domain          = "ad.internal"
-  # ad_dns             = "10.0.0.10"
-  # network_name       = var.network_name
-  # ad_net_bios_prefix = "smbserver"
-  # ad_username        = "user"
-  # ad_password        = "password"
-  # ldap_enabled       = false
-
-  # create_backup_vault      = true
-  # kms_config_name          = "netapp-kms-policy"
-  # kms_config_crypto_key_id = google_kms_crypto_key.crypto_key.id
 
   storage_volumes = [
 
-    { name       = "test-volume-1"
+    {
+      name       = "test-volume-1"
       share_name = "test-volume-1"
       size       = "100"
       protocols  = ["NFSV3"]
@@ -144,7 +118,8 @@ module "netapp_volumes" {
       }
     },
 
-    { name       = "test-volume-2"
+    {
+      name       = "test-volume-2"
       share_name = "test-volume-2"
       size       = "200"
       protocols  = ["NFSV3"]
@@ -152,8 +127,7 @@ module "netapp_volumes" {
         enabled = true
         daily_schedule = {
           snapshots_to_keep = 1
-          # minute            = 1
-          hour = 22
+          hour              = 22
         }
       }
     },
@@ -166,25 +140,52 @@ module "netapp_volumes" {
   ]
 }
 
-# resource "google_project_iam_custom_role" "net_app_custom_role" {
-#   project     = var.project_id
-#   role_id     = "cmekNetAppVolumesRole${random_id.suffix.hex}"
-#   title       = "cmekNetAppVolumesRole-${random_id.suffix.hex}"
-#   description = "custom cmek cvs role"
-#   permissions = [
-#     "cloudkms.cryptoKeyVersions.get",
-#     "cloudkms.cryptoKeyVersions.list",
-#     "cloudkms.cryptoKeyVersions.useToDecrypt",
-#     "cloudkms.cryptoKeyVersions.useToEncrypt",
-#     "cloudkms.cryptoKeys.get",
-#     "cloudkms.keyRings.get",
-#     "cloudkms.locations.get",
-#     "cloudkms.locations.list",
-#   ]
-# }
+## Example for creating volume only by providing an existing storage pool
 
-# resource "google_kms_crypto_key_iam_member" "crypto_key" {
-#   crypto_key_id = google_kms_crypto_key.crypto_key.id
-#   role          = google_project_iam_custom_role.net_app_custom_role.id
-#   member        = "serviceAccount:${module.netapp_volumes.kms_config_service_account}"
-# }
+module "volumes_only" {
+  source = "googlestaging/netapp-volumes/google"
+
+  project_id = module.netapp_volumes.storage_pool.project
+  location   = module.netapp_volumes.storage_pool.location
+  storege_pool = {
+    create_pool = false
+    name        = module.netapp_volumes.storage_pool.name
+  }
+
+  storage_volumes = [
+
+    {
+      name       = "test-volume-3"
+      share_name = "test-volume-3"
+      size       = "100"
+      protocols  = ["NFSV3"]
+      snapshot_policy = {
+        enabled = true
+        daily_schedule = {
+          snapshots_to_keep = 1
+          minute            = 21
+          hour              = 21
+        }
+        weekly_schedule = {
+          snapshots_to_keep = 1
+          minute            = 1
+          hour              = 1
+          day               = "Monday"
+        }
+      }
+
+      export_policy_rules = {
+        test = {
+          allowed_clients = "10.0.0.0/24,10.100.0.0/24"
+          access_type     = "READ_WRITE"
+          nfsv3           = true
+          has_root_access = true
+        }
+      }
+    },
+  ]
+
+  depends_on = [
+    module.netapp_volumes,
+  ]
+}

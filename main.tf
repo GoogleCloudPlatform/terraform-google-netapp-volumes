@@ -42,7 +42,7 @@ resource "google_netapp_volume" "storage_volumes" {
   name               = each.key
   capacity_gib       = each.value.size
   share_name         = each.value.share_name
-  storage_pool       = var.storege_pool.create_pool ? google_netapp_storage_pool.storage_pool[0].name : each.value.name
+  storage_pool       = var.storege_pool.create_pool ? google_netapp_storage_pool.storage_pool[0].name : var.storege_pool.name
   protocols          = each.value.protocols
   labels             = merge(var.common_labels, each.value.labels)
   smb_settings       = lookup(each.value, "smb_settings", null)
@@ -109,70 +109,3 @@ resource "google_netapp_volume" "storage_volumes" {
     }
   }
 }
-
-
-
-
-
-## Backup policies define a schedule for automated backup creation. You can define how many daily, weekly, and monthly backups of your data you want NetApp Volumes to retain. If a policy is attached to a volume, then backups will generate automatically.
-## You can't control the exact time a scheduled backup is created. Scheduled backups that use a backup policy retain the number of specified daily, weekly, and monthly backups.
-# resource "google_netapp_backup_policy" "test_backup_policy_full" {
-#   name          = "test-backup-policy-full"
-#   location = "us-central1"
-#   daily_backup_limit   = 2
-#   weekly_backup_limit  = 1
-#   monthly_backup_limit = 1
-#   description = "TF test backup schedule"
-#   enabled = true
-#   labels = {
-#     "foo" = "bar"
-#   }
-# }
-
-
-# ### Active Directory policies are region-specific, with the ability to configure only one policy per region.
-# resource "google_netapp_active_directory" "active_directory" {
-#   count                  = var.ldap_enabled ? 1 : 0
-#   project                = var.project_id
-#   name                   = local.active_directory_name
-#   location               = var.location
-#   domain                 = var.ad_domain
-#   dns                    = var.ad_dns
-#   net_bios_prefix        = var.ad_net_bios_prefix
-#   username               = var.ad_username
-#   password               = var.ad_password
-#   aes_encryption         = var.ad_aes_encryption
-#   backup_operators       = var.ad_backup_operators
-#   description            = var.ad_description
-#   encrypt_dc_connections = var.ad_encrypt_dc_connections
-#   kdc_hostname           = var.ad_kdc_hostname
-#   kdc_ip                 = var.ad_kdc_ip
-#   labels                 = local.active_directory_labels
-#   ldap_signing           = var.ad_ldap_signing
-#   nfs_users_with_ldap    = var.ad_nfs_users_with_ldap
-#   organizational_unit    = var.ad_organizational_unit
-#   security_operators     = var.ad_security_operators
-#   site                   = var.ad_site
-# }
-
-# ##You can only create one backup vault per region. A vault can hold multiple backups for multiple volumes in that region
-# resource "google_netapp_backup_vault" "backup_vault" {
-#   count       = var.create_backup_vault ? 1 : 0
-#   project     = var.project_id
-#   name        = local.backup_vault_name
-#   location    = var.location
-#   description = var.backup_vault_description
-#   labels      = local.backup_vault_labels
-# }
-
-
-# ## The use of CMEK is optional. If used, CMEK policies are region-specific. You can only configure one policy per region.
-# resource "google_netapp_kmsconfig" "kms_config" {
-#   provider        = google-beta
-#   count           = var.kms_config_name == null ? 0 : 1
-#   project         = var.project_id
-#   name            = var.kms_config_name
-#   description     = var.kms_config_description
-#   crypto_key_name = var.kms_config_crypto_key_id
-#   location        = var.location
-# }

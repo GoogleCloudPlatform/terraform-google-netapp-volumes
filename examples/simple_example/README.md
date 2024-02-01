@@ -20,10 +20,14 @@ This example illustrates how to use the `netapp-volume` module.
 | storage\_pool | Storage pool created |
 | storage\_pool\_id | Name of theStorage pool created |
 | storage\_pool\_name | Name of theStorage pool created |
-| storage\_volume1\_id | storage volume 1 name |
+| storage\_volume1\_id | storage volume 1 ID |
 | storage\_volume1\_name | storage volume 1 name |
+| storage\_volume2\_id | storage volume 2 ID |
 | storage\_volume2\_name | storage volume 2 name |
+| storage\_volume3\_id | storage volume 3 ID |
+| storage\_volume3\_name | storage volume 3 name |
 | storage\_volumes | List of created volumes |
+| storage\_volumes\_only | List of created volumes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

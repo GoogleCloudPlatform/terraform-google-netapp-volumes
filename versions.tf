@@ -21,15 +21,8 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 5.13, < 6"
     }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 5.13, < 6"
-    }
   }
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-netapp-volumes/v0.1"
-  }
-  provider_meta "google-beta" {
     module_name = "blueprints/terraform/terraform-google-netapp-volumes/v0.1"
   }
 }

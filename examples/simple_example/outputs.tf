@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
+
+output "project_id" {
+  value = var.project_id
+}
+
+output "location" {
+  value       = var.region
+  description = "Location of the resources"
+}
+
 output "storage_pool" {
-  value       = module.netapp_volumes.storage_pool[0]
+  value       = module.netapp_volumes.storage_pool
   description = "Storage pool created"
 }
 
 output "storage_pool_name" {
-  value       = module.netapp_volumes.storage_pool[0].name
+  value       = module.netapp_volumes.storage_pool.name
   description = "Name of theStorage pool created"
 }
 
 output "storage_pool_id" {
-  value       = module.netapp_volumes.storage_pool[0].id
+  value       = module.netapp_volumes.storage_pool.id
   description = "Name of theStorage pool created"
 }
 
@@ -41,7 +51,7 @@ output "storage_volume1_name" {
 
 output "storage_volume1_id" {
   value       = module.netapp_volumes.storage_volumes["test-volume-1"].id
-  description = "storage volume 1 name"
+  description = "storage volume 1 ID"
 }
 
 output "storage_volume2_name" {
@@ -49,11 +59,22 @@ output "storage_volume2_name" {
   description = "storage volume 2 name"
 }
 
-output "project_id" {
-  value = var.project_id
+output "storage_volume2_id" {
+  value       = module.netapp_volumes.storage_volumes["test-volume-2"].id
+  description = "storage volume 2 ID"
 }
 
-output "location" {
-  value       = var.region
-  description = "Location of the resources"
+output "storage_volumes_only" {
+  value       = module.volumes_only.storage_volumes
+  description = "List of created volumes"
+}
+
+output "storage_volume3_name" {
+  value       = module.volumes_only.storage_volumes["test-volume-3"].name
+  description = "storage volume 3 name"
+}
+
+output "storage_volume3_id" {
+  value       = module.volumes_only.storage_volumes["test-volume-3"].id
+  description = "storage volume 3 ID"
 }
