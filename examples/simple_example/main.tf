@@ -74,7 +74,7 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
 ## Example for creating Storage Pool and Volumes
 
 module "netapp_volumes" {
-  source = "googlestaging/netapp-volumes/google"
+  source = "GoogleCloudPlatform/netapp-volumes/google"
 
   project_id = var.project_id
   location   = var.region
@@ -143,7 +143,7 @@ module "netapp_volumes" {
 ## Example for creating volume only by providing an existing storage pool
 
 module "volumes_only" {
-  source = "googlestaging/netapp-volumes/google"
+  source = "GoogleCloudPlatform/netapp-volumes/google"
 
   project_id = module.netapp_volumes.storage_pool.project
   location   = module.netapp_volumes.storage_pool.location
