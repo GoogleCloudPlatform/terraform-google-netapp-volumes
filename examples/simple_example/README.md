@@ -1,4 +1,4 @@
-# Simple Example
+# Simple NetApp Example
 
 This example illustrates how to use the `netapp-volume` module. It creates a NetApp Storage Pool and 2 Volumes in that Storage Pool. It also creates third volume by calling module and proving name of the storage pool created using the first module call.
 
