@@ -25,7 +25,7 @@ variable "location" {
 }
 
 variable "common_labels" {
-  description = "Common Labels as key value pairs for all the resources"
+  description = "Common Labels as key value pairs. Applies to all the resources. If labels are provided in storege_pool or storage_volumes then they are merged with common labels before being applied to the resources"
   type        = map(any)
   default     = {}
 }
