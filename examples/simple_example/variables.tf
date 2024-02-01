@@ -25,9 +25,8 @@ variable "network_name" {
   default     = "simple-netapp"
 }
 
-
 variable "region" {
   default     = "us-central1"
-  description = "The region for primary cluster"
+  description = "Location of the resources"
   type        = string
 }

@@ -14,16 +14,46 @@
  * limitations under the License.
  */
 
+output "storage_pool" {
+  value       = module.netapp_volumes.storage_pool[0]
+  description = "Storage pool created"
+}
 
-output "netapp_volumes" {
-  value = module.netapp_volumes
+output "storage_pool_name" {
+  value       = module.netapp_volumes.storage_pool[0].name
+  description = "Name of theStorage pool created"
+}
+
+output "storage_pool_id" {
+  value       = module.netapp_volumes.storage_pool[0].id
+  description = "Name of theStorage pool created"
+}
+
+output "storage_volumes" {
+  value       = module.netapp_volumes.storage_volumes
+  description = "List of created volumes"
+}
+
+output "storage_volume1_name" {
+  value       = module.netapp_volumes.storage_volumes["test-volume-1"].name
+  description = "storage volume 1 name"
+}
+
+output "storage_volume1_id" {
+  value       = module.netapp_volumes.storage_volumes["test-volume-1"].id
+  description = "storage volume 1 name"
+}
+
+output "storage_volume2_name" {
+  value       = module.netapp_volumes.storage_volumes["test-volume-2"].name
+  description = "storage volume 2 name"
 }
 
 output "project_id" {
   value = var.project_id
 }
 
-output "kms_key_id" {
-  value       = google_kms_crypto_key.crypto_key.id
-  description = "KMS key for kms config profile"
+output "location" {
+  value       = var.region
+  description = "Location of the resources"
 }

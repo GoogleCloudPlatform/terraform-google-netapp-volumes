@@ -19,21 +19,40 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSimpleNetApp(t *testing.T) {
-	example := tft.NewTFBlueprintTest(t)
+	netapp := tft.NewTFBlueprintTest(t)
 
-	example.DefineVerify(func(assert *assert.Assertions) {
-		example.DefaultVerify(assert)
+	netapp.DefineVerify(func(assert *assert.Assertions) {
+		netapp.DefaultVerify(assert)
 
-		projectID := example.GetStringOutput("project_id")
-		services := gcloud.Run(t, "services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
+		projectID := netapp.GetStringOutput("project_id")
+		location := netapp.GetStringOutput("location")
+		// storagePool : netapp.GetStringOutput("storage_pool")
+		storagePoolName := netapp.GetStringOutput("storage_pool_name")
+		storagePoolID := netapp.GetStringOutput("storage_pool_id")
+		volume1Name := netapp.GetStringOutput("storage_volume1_name")
+		volume1ID := netapp.GetStringOutput("storage_volume1_id")
+		// volume2 : netapp.GetStringOutput("storage_volume2")
+		sp := gcloud.Runf(t, "netapp storage-pools describe %s --location %s --project %s", storagePoolName, location, projectID)
 
-		match := utils.GetFirstMatchResult(t, services, "config.name", "storage.googleapis.com")
-		assert.Equal("ENABLED", match.Get("state").String(), "storage service should be enabled")
+		assert.Equal("2048", sp.Get("capacityGib").String(), "has expected capacityGib")
+		assert.Equal("test pool", sp.Get("description").String(), "has expected description")
+		assert.Equal(storagePoolID, sp.Get("name").String(), "has expected name")
+		assert.Equal("PREMIUM", sp.Get("serviceLevel").String(), "has expected serviceLevel")
+
+		sv1 := gcloud.Runf(t, "netapp volumes describe %s --location %s --project %s", volume1Name, location, projectID)
+
+		assert.Equal("100", sv1.Get("capacityGib").String(), "has expected capacityGib")
+		assert.Equal("UNIX", sv1.Get("securityStyle").String(), "has expected securityStyle")
+		assert.Equal(volume1ID, sv1.Get("name").String(), "has expected name")
+		assert.Equal("PREMIUM", sv1.Get("serviceLevel").String(), "has expected serviceLevel")
+		assert.Equal("1", sv1.Get("snapshotPolicy.dailySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
+		assert.Equal("23", sv1.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
+		assert.Equal("45", sv1.Get("snapshotPolicy.dailySchedule.minute").String(), "has expected minute")
+
 	})
-	example.Test()
+	netapp.Test()
 }
