@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+# Create Network with a subnetwork and private service access for both netapp.servicenetworking.goog and servicenetworking.googleapis.com
+
 resource "google_compute_network" "default" {
   name                    = var.network_name
   project                 = var.project_id
@@ -71,7 +73,7 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
   deletion_policy = "ABANDON"
 }
 
-## Example for creating Storage Pool and Volumes
+## Create Storage Pool and 2 Volumes
 
 module "netapp_volumes" {
   source = "GoogleCloudPlatform/netapp-volumes/google"
@@ -140,13 +142,15 @@ module "netapp_volumes" {
   ]
 }
 
-## Example for creating volume only by providing an existing storage pool
+## Create storage volume in the storage pool created by first module call.
 
 module "volumes_only" {
   source = "GoogleCloudPlatform/netapp-volumes/google"
 
   project_id = module.netapp_volumes.storage_pool.project
   location   = module.netapp_volumes.storage_pool.location
+
+  # name of an existing storage pool
   storege_pool = {
     create_pool = false
     name        = module.netapp_volumes.storage_pool.name
