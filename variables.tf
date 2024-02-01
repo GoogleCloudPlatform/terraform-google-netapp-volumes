@@ -97,5 +97,5 @@ variable "storage_volumes" {
     }))
 
   }))
-  description = "Storage volumes details"
+  description = "List of Storage Volumes"
 }
