@@ -18,7 +18,7 @@ Functional examples are included in the [examples](./examples/) directory. Basic
 
 ```hcl
 module "netapp_pool_volume" {
-  source = "GoogleCloudPlatform/netapp-volumes/google"
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
   version = "~> 0.1"
 
   project_id         = "test-project-id"
@@ -87,7 +87,8 @@ module "netapp_pool_volume" {
 
 ```hcl
 module "volumes_only" {
-  source = "googlestaging/netapp-volumes/google"
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
+  version = "~> 0.1"
 
   project_id = "my-project-id"
   location   = "us-central1"
