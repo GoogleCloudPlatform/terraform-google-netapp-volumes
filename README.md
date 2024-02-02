@@ -196,8 +196,7 @@ resources of this module:
 
 - Google Cloud NetApp Volumes API: `netapp.googleapis.com`
 
-The [Project Factory module][project-factory-module] can be used to
-provision a project with the necessary APIs enabled.
+The [Project Factory module](https://github.com/terraform-google-modules/terraform-google-project-factory) can be used to provision a project with the necessary APIs enabled.
 
 ## Contributing
 
