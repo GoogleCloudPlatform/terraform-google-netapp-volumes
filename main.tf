@@ -15,23 +15,23 @@
  */
 
 data "google_compute_network" "vpc_network" {
-  count   = var.storege_pool.create_pool ? 1 : 0
-  name    = var.storege_pool.network_name
+  count   = var.storage_pool.create_pool ? 1 : 0
+  name    = var.storage_pool.network_name
   project = var.project_id
 }
 
 resource "google_netapp_storage_pool" "storage_pool" {
-  count            = var.storege_pool.create_pool ? 1 : 0
+  count            = var.storage_pool.create_pool ? 1 : 0
   project          = var.project_id
   location         = var.location
-  name             = var.storege_pool.name
-  service_level    = var.storege_pool.service_level
-  capacity_gib     = var.storege_pool.size
+  name             = var.storage_pool.name
+  service_level    = var.storage_pool.service_level
+  capacity_gib     = var.storage_pool.size
   network          = data.google_compute_network.vpc_network[0].id
-  description      = lookup(var.storege_pool, "description", null)
-  labels           = merge(var.common_labels, var.storege_pool.labels)
-  ldap_enabled     = var.storege_pool.ldap_enabled
-  active_directory = lookup(var.storege_pool, "ad_id", null)
+  description      = lookup(var.storage_pool, "description", null)
+  labels           = merge(var.common_labels, var.storage_pool.labels)
+  ldap_enabled     = var.storage_pool.ldap_enabled
+  active_directory = lookup(var.storage_pool, "ad_id", null)
 }
 
 
@@ -42,7 +42,7 @@ resource "google_netapp_volume" "storage_volumes" {
   name               = each.key
   capacity_gib       = each.value.size
   share_name         = each.value.share_name
-  storage_pool       = var.storege_pool.create_pool ? google_netapp_storage_pool.storage_pool[0].name : var.storege_pool.name
+  storage_pool       = var.storage_pool.create_pool ? google_netapp_storage_pool.storage_pool[0].name : var.storage_pool.name
   protocols          = each.value.protocols
   labels             = merge(var.common_labels, each.value.labels)
   smb_settings       = lookup(each.value, "smb_settings", null)

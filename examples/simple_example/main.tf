@@ -81,7 +81,7 @@ module "netapp_volumes" {
   project_id = var.project_id
   location   = var.region
 
-  storege_pool = {
+  storage_pool = {
     create_pool   = true
     name          = "test-pool"
     size          = "2048"
@@ -151,7 +151,7 @@ module "volumes_only" {
   location   = module.netapp_volumes.storage_pool.location
 
   # name of an existing storage pool
-  storege_pool = {
+  storage_pool = {
     create_pool = false
     name        = module.netapp_volumes.storage_pool.name
   }

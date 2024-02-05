@@ -31,7 +31,7 @@ variable "common_labels" {
 }
 
 
-variable "storege_pool" {
+variable "storage_pool" {
   description = "Storage pool details"
   type = object({
     create_pool   = optional(bool, false)
