@@ -24,7 +24,7 @@ module "netapp_pool_volume" {
   project_id         = "test-project-id"
   location           = "us-central1"
 
-  storege_pool = {
+  storage_pool = {
     create_pool   = true
     name          = "test-pool"
     size          = "2048"
@@ -94,7 +94,7 @@ module "volumes_only" {
   location   = "us-central1"
 
   # name of an existing storage pool
-  storege_pool = {
+  storage_pool = {
     create_pool = false
     name        = "storage-pool-name"
   }
@@ -160,7 +160,7 @@ module "volumes_only" {
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
-## storege_pool details
+## storage_pool details
 In order to create Storage Pool set `create_pool` to `true`, provide values for `name`, `network_name`, `service_level` and `size`. Other fields are optional.
 
 If you already have a Storage Pool created, set `create_pool` to `false` and provide `name` of an existing Storage Pool.
