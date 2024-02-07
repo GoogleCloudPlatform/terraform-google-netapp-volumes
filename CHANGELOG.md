@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## 0.1.0 (2024-02-07)
+
+
+### Miscellaneous Chores
+
+* release 0.1.0 ([3f6143d](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/3f6143db29129b1f2fac472c8de6e0ef5d8fced1))
+
 ## [0.1.0](https://github.com/terraform-google-modules/terraform-google-netapp-volume/releases/tag/v0.1.0) - 20XX-YY-ZZ
 
 ### Features
