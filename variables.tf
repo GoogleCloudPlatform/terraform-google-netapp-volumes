@@ -80,20 +80,21 @@ variable "storage_volumes" {
       hourly_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
-      }), null)
+      }))
 
       daily_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
         hour              = optional(number)
-      }), null)
+      }))
 
       weekly_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
         hour              = optional(number)
         day               = optional(string)
-      }), null)
+      }))
+
     }))
 
   }))

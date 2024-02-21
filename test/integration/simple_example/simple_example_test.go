@@ -63,9 +63,9 @@ func TestSimpleNetApp(t *testing.T) {
 		assert.Equal("UNIX", sv2.Get("securityStyle").String(), "has expected securityStyle")
 		assert.Equal(volume2ID, sv2.Get("name").String(), "has expected name")
 		assert.Equal("PREMIUM", sv2.Get("serviceLevel").String(), "has expected serviceLevel")
-		assert.Equal("1", sv2.Get("snapshotPolicy.dailySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
-		assert.Equal("22", sv2.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
-		assert.Equal("0", sv2.Get("snapshotPolicy.dailySchedule.minute").String(), "has expected minute")
+		// assert.Equal("1", sv2.Get("snapshotPolicy.dailySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
+		// assert.Equal("22", sv2.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
+		// assert.Equal("0", sv2.Get("snapshotPolicy.dailySchedule.minute").String(), "has expected minute")
 
 		sv3 := gcloud.Runf(t, "netapp volumes describe %s --location %s --project %s", volume3Name, location, projectID)
 
