@@ -52,6 +52,7 @@ resource "google_netapp_volume" "storage_volumes" {
   security_style     = lookup(each.value, "security_style", null)
   kerberos_enabled   = lookup(each.value, "kerberos_enabled", null)
   restricted_actions = lookup(each.value, "restricted_actions", null)
+  deletion_policy    = lookup(each.value, "deletion_policy", null)
 
   dynamic "snapshot_policy" {
     for_each = lookup(each.value, "snapshot_policy", null) == null ? [] : ["volume_snapshot_policy"]

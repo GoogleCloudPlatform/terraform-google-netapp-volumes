@@ -144,7 +144,8 @@ module "netapp_volumes" {
 ## Create storage volume in the storage pool created by first module call.
 
 module "volumes_only" {
-  source = "GoogleCloudPlatform/netapp-volumes/google"
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
+  version = "~> 0.1"
 
   project_id = module.netapp_volumes.storage_pool.project
   location   = module.netapp_volumes.storage_pool.location
@@ -158,10 +159,12 @@ module "volumes_only" {
   storage_volumes = [
 
     {
-      name       = "test-volume-3"
-      share_name = "test-volume-3"
-      size       = "100"
-      protocols  = ["NFSV3"]
+      name            = "test-volume-3"
+      share_name      = "test-volume-3"
+      size            = "100"
+      protocols       = ["NFSV3"]
+      deletion_policy = "DEFAULT"
+
       snapshot_policy = {
         enabled = true
         daily_schedule = {

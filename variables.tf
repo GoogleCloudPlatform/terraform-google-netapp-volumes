@@ -60,6 +60,7 @@ variable "storage_volumes" {
     security_style     = optional(string)
     kerberos_enabled   = optional(bool)
     restricted_actions = optional(list(string))
+    deletion_policy    = optional(string)
 
     export_policy_rules = optional(map(object({
       allowed_clients       = optional(string)
