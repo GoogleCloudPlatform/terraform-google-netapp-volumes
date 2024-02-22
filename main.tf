@@ -89,7 +89,7 @@ resource "google_netapp_volume" "storage_volumes" {
   }
 
   dynamic "export_policy" {
-    for_each = lookup(each.value, "export_policy_rules", null) == null ? [] : ["export_policy_rules"]
+    for_each = each.value.export_policy_rules == null ? [] : ["export_policy_rules"]
     content {
       dynamic "rules" {
         for_each = each.value.export_policy_rules == null ? {} : each.value.export_policy_rules
