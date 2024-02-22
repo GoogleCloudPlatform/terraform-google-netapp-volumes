@@ -30,7 +30,6 @@ func TestSimpleNetApp(t *testing.T) {
 
 		projectID := netapp.GetStringOutput("project_id")
 		location := netapp.GetStringOutput("location")
-		// storagePool : netapp.GetStringOutput("storage_pool")
 		storagePoolName := netapp.GetStringOutput("storage_pool_name")
 		storagePoolID := netapp.GetStringOutput("storage_pool_id")
 		volume1Name := netapp.GetStringOutput("storage_volume1_name")
