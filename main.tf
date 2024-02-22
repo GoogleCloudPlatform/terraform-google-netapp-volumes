@@ -52,13 +52,14 @@ resource "google_netapp_volume" "storage_volumes" {
   security_style     = lookup(each.value, "security_style", null)
   kerberos_enabled   = lookup(each.value, "kerberos_enabled", null)
   restricted_actions = lookup(each.value, "restricted_actions", null)
+  deletion_policy    = lookup(each.value, "deletion_policy", null)
 
   dynamic "snapshot_policy" {
-    for_each = each.value.snapshot_policy.enabled ? ["volume_snapshot_policy"] : []
+    for_each = each.value.snapshot_policy != null ? ["volume_snapshot_policy"] : []
     content {
-      enabled = each.value.snapshot_policy.enabled
+      enabled = lookup(each.value.snapshot_policy, "enabled", false)
       dynamic "hourly_schedule" {
-        for_each = each.value.snapshot_policy.hourly_schedule == null ? [] : ["hourly_schedule"]
+        for_each = lookup(each.value.snapshot_policy, "hourly_schedule", null) == null ? [] : ["hourly_schedule"]
         content {
           snapshots_to_keep = lookup(each.value.snapshot_policy.hourly_schedule, "snapshots_to_keep")
           minute            = lookup(each.value.snapshot_policy.hourly_schedule, "minute")
@@ -66,7 +67,7 @@ resource "google_netapp_volume" "storage_volumes" {
       }
 
       dynamic "daily_schedule" {
-        for_each = each.value.snapshot_policy.daily_schedule == null ? [] : ["daily_schedule"]
+        for_each = lookup(each.value.snapshot_policy, "daily_schedule", null) == null ? [] : ["daily_schedule"]
         content {
           snapshots_to_keep = lookup(each.value.snapshot_policy.daily_schedule, "snapshots_to_keep")
           minute            = lookup(each.value.snapshot_policy.daily_schedule, "minute")
@@ -75,7 +76,7 @@ resource "google_netapp_volume" "storage_volumes" {
       }
 
       dynamic "weekly_schedule" {
-        for_each = each.value.snapshot_policy.weekly_schedule == null ? [] : ["weekly_schedule"]
+        for_each = lookup(each.value.snapshot_policy, "weekly_schedule", null) == null ? [] : ["weekly_schedule"]
         content {
           snapshots_to_keep = lookup(each.value.snapshot_policy.weekly_schedule, "snapshots_to_keep")
           minute            = lookup(each.value.snapshot_policy.weekly_schedule, "minute")

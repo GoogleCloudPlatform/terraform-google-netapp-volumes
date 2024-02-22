@@ -76,7 +76,8 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
 ## Create Storage Pool and 2 Volumes
 
 module "netapp_volumes" {
-  source = "GoogleCloudPlatform/netapp-volumes/google"
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
+  version = "~> 0.1"
 
   project_id = var.project_id
   location   = var.region
@@ -103,6 +104,10 @@ module "netapp_volumes" {
       protocols  = ["NFSV3"]
       snapshot_policy = {
         enabled = true
+        hourly_schedule = {
+          snapshots_to_keep = 12
+          minute            = 30
+        }
         daily_schedule = {
           snapshots_to_keep = 1
           minute            = 45
@@ -118,6 +123,7 @@ module "netapp_volumes" {
           has_root_access = true
         }
       }
+
     },
 
     {
@@ -125,13 +131,6 @@ module "netapp_volumes" {
       share_name = "test-volume-2"
       size       = "200"
       protocols  = ["NFSV3"]
-      snapshot_policy = {
-        enabled = true
-        daily_schedule = {
-          snapshots_to_keep = 1
-          hour              = 22
-        }
-      }
     },
 
   ]
@@ -145,7 +144,8 @@ module "netapp_volumes" {
 ## Create storage volume in the storage pool created by first module call.
 
 module "volumes_only" {
-  source = "GoogleCloudPlatform/netapp-volumes/google"
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
+  version = "~> 0.1"
 
   project_id = module.netapp_volumes.storage_pool.project
   location   = module.netapp_volumes.storage_pool.location
@@ -159,10 +159,12 @@ module "volumes_only" {
   storage_volumes = [
 
     {
-      name       = "test-volume-3"
-      share_name = "test-volume-3"
-      size       = "100"
-      protocols  = ["NFSV3"]
+      name            = "test-volume-3"
+      share_name      = "test-volume-3"
+      size            = "100"
+      protocols       = ["NFSV3"]
+      deletion_policy = "DEFAULT"
+
       snapshot_policy = {
         enabled = true
         daily_schedule = {

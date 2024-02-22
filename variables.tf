@@ -60,6 +60,7 @@ variable "storage_volumes" {
     security_style     = optional(string)
     kerberos_enabled   = optional(bool)
     restricted_actions = optional(list(string))
+    deletion_policy    = optional(string)
 
     export_policy_rules = optional(map(object({
       allowed_clients       = optional(string)
@@ -80,20 +81,21 @@ variable "storage_volumes" {
       hourly_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
-      }), null)
+      }))
 
       daily_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
         hour              = optional(number)
-      }), null)
+      }))
 
       weekly_schedule = optional(object({
         snapshots_to_keep = optional(number)
         minute            = optional(number)
         hour              = optional(number)
         day               = optional(string)
-      }), null)
+      }))
+
     }))
 
   }))
