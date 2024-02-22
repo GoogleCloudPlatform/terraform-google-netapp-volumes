@@ -55,7 +55,7 @@ resource "google_netapp_volume" "storage_volumes" {
   deletion_policy    = lookup(each.value, "deletion_policy", null)
 
   dynamic "snapshot_policy" {
-    for_each = lookup(each.value, "snapshot_policy", null) == null ? [] : ["volume_snapshot_policy"]
+    for_each = each.value.snapshot_policy != null ? ["volume_snapshot_policy"] : []
     content {
       enabled = lookup(each.value.snapshot_policy, "enabled", false)
       dynamic "hourly_schedule" {
