@@ -17,7 +17,7 @@
 data "google_compute_network" "vpc_network" {
   count   = var.storage_pool.create_pool ? 1 : 0
   name    = var.storage_pool.network_name
-  project = var.project_id
+  project = var.storage_pool.network_project_id == null ? var.project_id : var.storage_pool.network_project_id
 }
 
 resource "google_netapp_storage_pool" "storage_pool" {
