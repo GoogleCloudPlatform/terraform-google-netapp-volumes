@@ -34,15 +34,16 @@ variable "common_labels" {
 variable "storage_pool" {
   description = "Storage pool details"
   type = object({
-    create_pool   = optional(bool, false)
-    name          = string
-    network_name  = optional(string)
-    service_level = optional(string)
-    size          = optional(number)
-    description   = optional(string)
-    labels        = optional(map(string), {})
-    ldap_enabled  = optional(bool, false)
-    ad_id         = optional(string)
+    create_pool        = optional(bool, false)
+    name               = string
+    network_name       = optional(string)
+    network_project_id = optional(string)
+    service_level      = optional(string)
+    size               = optional(number)
+    description        = optional(string)
+    labels             = optional(map(string), {})
+    ldap_enabled       = optional(bool, false)
+    ad_id              = optional(string)
   })
 }
 
