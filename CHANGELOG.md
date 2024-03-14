@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v0.2.0...v0.3.0) (2024-03-05)
+
+
+### Features
+
+* Add vpc network project_id for shared VPC ([#13](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/13)) ([34f7304](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/34f7304fe775e92244e4fda7d92e55d6ccd39298))
+
 ## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v0.1.0...v0.2.0) (2024-02-27)
 
 
