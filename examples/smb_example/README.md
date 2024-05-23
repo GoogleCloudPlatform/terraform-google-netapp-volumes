@@ -1,20 +1,22 @@
-# Simple NetApp Example
+# SMB NetApp Example
 
-This example illustrates how to use the `netapp-volume` module. It creates a NetApp Storage Pool and 2 Volumes in that Storage Pool. It also creates third volume by calling module and proving name of the storage pool created using the first module call.
+This example illustrates how to use the `netapp-volume` module. It creates a NetApp Storage Pool with ldap enabled and active directory policy. It also creates a volume with SMB protocol.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| network\_name | The ID of the network in which to provision resources. | `string` | `"simple-netapp"` | no |
+| network\_name | The ID of the network in which to provision resources. | `string` | `"simple-netapp-smb"` | no |
 | project\_id | The ID of the project in which to provision resources. | `string` | n/a | yes |
 | region | Location of the resources | `string` | `"us-central1"` | no |
+| replica\_region | Location of the replica resources | `string` | `"us-east1"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| active\_directory\_config | Active directory config |
 | location | Location of the resources |
 | project\_id | Project ID |
 | storage\_pool | Storage pool created |
@@ -22,12 +24,7 @@ This example illustrates how to use the `netapp-volume` module. It creates a Net
 | storage\_pool\_name | Name of theStorage pool created |
 | storage\_volume1\_id | storage volume 1 ID |
 | storage\_volume1\_name | storage volume 1 name |
-| storage\_volume2\_id | storage volume 2 ID |
-| storage\_volume2\_name | storage volume 2 name |
-| storage\_volume3\_id | storage volume 3 ID |
-| storage\_volume3\_name | storage volume 3 name |
 | storage\_volumes | List of created volumes |
-| storage\_volumes\_only | List of created volumes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
