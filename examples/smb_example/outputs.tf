@@ -25,6 +25,11 @@ output "location" {
   description = "Location of the resources"
 }
 
+output "active_directory_config" {
+  value       = google_netapp_active_directory.smb_test_active_directory
+  description = "Active directory config"
+}
+
 output "storage_pool" {
   value       = module.netapp_volumes.storage_pool
   description = "Storage pool created"
@@ -46,36 +51,11 @@ output "storage_volumes" {
 }
 
 output "storage_volume1_name" {
-  value       = module.netapp_volumes.storage_volumes["test-volume-1"].name
+  value       = module.netapp_volumes.storage_volumes["test-volume-smb-1"].name
   description = "storage volume 1 name"
 }
 
 output "storage_volume1_id" {
-  value       = module.netapp_volumes.storage_volumes["test-volume-1"].id
+  value       = module.netapp_volumes.storage_volumes["test-volume-smb-1"].id
   description = "storage volume 1 ID"
-}
-
-output "storage_volume2_name" {
-  value       = module.netapp_volumes.storage_volumes["test-volume-2"].name
-  description = "storage volume 2 name"
-}
-
-output "storage_volume2_id" {
-  value       = module.netapp_volumes.storage_volumes["test-volume-2"].id
-  description = "storage volume 2 ID"
-}
-
-output "storage_volumes_only" {
-  value       = module.volumes_only.storage_volumes
-  description = "List of created volumes"
-}
-
-output "storage_volume3_name" {
-  value       = module.volumes_only.storage_volumes["test-volume-3"].name
-  description = "storage volume 3 name"
-}
-
-output "storage_volume3_id" {
-  value       = module.volumes_only.storage_volumes["test-volume-3"].id
-  description = "storage volume 3 ID"
 }
