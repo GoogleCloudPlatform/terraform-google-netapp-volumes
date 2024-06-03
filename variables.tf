@@ -103,7 +103,6 @@ variable "storage_volumes" {
         hour              = optional(number)
         days_of_month     = optional(string)
       }))
-
     }))
 
   }))
