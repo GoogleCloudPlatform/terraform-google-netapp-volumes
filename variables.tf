@@ -97,6 +97,13 @@ variable "storage_volumes" {
         day               = optional(string)
       }))
 
+      monthly_schedule = optional(object({
+        snapshots_to_keep = optional(number)
+        minute            = optional(number)
+        hour              = optional(number)
+        days_of_month     = optional(string)
+      }))
+
     }))
 
   }))
