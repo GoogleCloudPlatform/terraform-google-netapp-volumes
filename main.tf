@@ -85,6 +85,16 @@ resource "google_netapp_volume" "storage_volumes" {
         }
       }
 
+      dynamic "monthly_schedule" {
+        for_each = lookup(each.value.snapshot_policy, "monthly_schedule", null) == null ? [] : ["monthly_schedule"]
+        content {
+          snapshots_to_keep = lookup(each.value.snapshot_policy.monthly_schedule, "snapshots_to_keep")
+          minute            = lookup(each.value.snapshot_policy.monthly_schedule, "minute")
+          hour              = lookup(each.value.snapshot_policy.monthly_schedule, "hour")
+          days_of_month     = lookup(each.value.snapshot_policy.monthly_schedule, "days_of_month ")
+        }
+      }
+
     }
   }
 
