@@ -10,6 +10,8 @@ This module is meant for use with Terraform 1.3+ and tested using Terraform 1.3+
 
 Current version is 0.X. Upgrade guides:
 
+- [0.X -> 1.0](/docs/upgrading_to_v1.0.md)
+
 
 ## Usage
 Functional examples are included in the [examples](./examples/) directory. Basic usage of this module is as follows:
@@ -86,41 +88,72 @@ module "netapp_pool_volume" {
 - Create storage volumes in an existing storage pool
 
 ```hcl
+module "storage_pool_only" {
+  source  = "GoogleCloudPlatform/netapp-volumes/google"
+  version = "~> 1.0"
+
+
+  project_id = var.project_id
+  location   = var.region
+
+  storage_pool = {
+    create_pool   = true
+    name          = "test-pool-2"
+    size          = "2048"
+    service_level = "PREMIUM"
+    ldap_enabled  = false
+    network_name  = var.network_name
+    labels = {
+      pool_env = "test"
+    }
+    description = "test storage pool only"
+  }
+
+  depends_on = [
+    google_service_networking_connection.vpc_connection,
+    google_service_networking_connection.netapp_vpc_connection,
+  ]
+}
+
+
+## 3 - Create storage volume in the storage pool already created
+
 module "volumes_only" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
-  project_id = "my-project-id"
-  location   = "us-central1"
+
+  project_id = module.netapp_volumes.storage_pool.project
+  location   = module.netapp_volumes.storage_pool.location
 
   # name of an existing storage pool
   storage_pool = {
     create_pool = false
-    name        = "storage-pool-name"
+    name        = module.storage_pool_only.storage_pool.name
   }
 
   storage_volumes = [
-
+    # test-volume-3
     {
-      name       = "test-volume-3"
-      share_name = "test-volume-3"
-      size       = "100"
-      protocols  = ["NFSV3"]
+      name            = "test-volume-3"
+      share_name      = "test-volume-3"
+      size            = "100"
+      protocols       = ["NFSV3"]
+      deletion_policy = "FORCE"
       snapshot_policy = {
         enabled = true
         daily_schedule = {
           snapshots_to_keep = 1
           minute            = 21
-          hour              = 21
+          hour              = 4
         }
         weekly_schedule = {
-          snapshots_to_keep = 1
+          snapshots_to_keep = 2
           minute            = 1
-          hour              = 1
-          day               = "Monday"
+          hour              = 3
+          day               = "Sunday"
         }
       }
-
       export_policy_rules = {
         test = {
           allowed_clients = "10.0.0.0/24,10.100.0.0/24"
@@ -136,7 +169,6 @@ module "volumes_only" {
     module.netapp_volumes,
   ]
 }
-
 ```
 
 
@@ -149,7 +181,7 @@ module "volumes_only" {
 | location | Name of the location. Usually a region name, expect for some STANDARD service level pools which require a zone name | `string` | n/a | yes |
 | project\_id | The ID of the project in which the resource belongs | `string` | n/a | yes |
 | storage\_pool | Storage pool details | <pre>object({<br>    create_pool        = optional(bool, false)<br>    name               = string<br>    network_name       = optional(string)<br>    network_project_id = optional(string)<br>    service_level      = optional(string)<br>    size               = optional(number)<br>    description        = optional(string)<br>    labels             = optional(map(string), {})<br>    ldap_enabled       = optional(bool, false)<br>    ad_id              = optional(string)<br>  })</pre> | n/a | yes |
-| storage\_volumes | List of Storage Volumes | <pre>list(object({<br>    name               = string<br>    size               = number<br>    share_name         = string<br>    protocols          = list(string)<br>    labels             = optional(map(string), {})<br>    smb_settings       = optional(list(string))<br>    unix_permissions   = optional(string)<br>    description        = optional(string)<br>    snapshot_directory = optional(bool)<br>    security_style     = optional(string)<br>    kerberos_enabled   = optional(bool)<br>    restricted_actions = optional(list(string))<br>    deletion_policy    = optional(string)<br><br>    export_policy_rules = optional(map(object({<br>      allowed_clients       = optional(string)<br>      has_root_access       = optional(string)<br>      access_type           = optional(string) #Possible values are: READ_ONLY, READ_WRITE, READ_NONE<br>      nfsv3                 = optional(bool)<br>      nfsv4                 = optional(bool)<br>      kerberos5_read_only   = optional(bool)<br>      kerberos5_read_write  = optional(bool)<br>      kerberos5i_read_only  = optional(bool)<br>      kerberos5i_read_write = optional(bool)<br>      kerberos5p_read_only  = optional(bool)<br>      kerberos5p_read_write = optional(bool)<br>    })))<br><br>    snapshot_policy = optional(object({<br>      enabled = optional(bool, false)<br>      hourly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>      }))<br><br>      daily_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>      }))<br><br>      weekly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>        day               = optional(string)<br>      }))<br><br>      monthly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>        days_of_month     = optional(string)<br>      }))<br><br>    }))<br><br>  }))</pre> | n/a | yes |
+| storage\_volumes | List of Storage Volumes | <pre>list(object({<br>    name               = string<br>    size               = number<br>    share_name         = string<br>    protocols          = list(string)<br>    labels             = optional(map(string), {})<br>    smb_settings       = optional(list(string))<br>    unix_permissions   = optional(string)<br>    description        = optional(string)<br>    snapshot_directory = optional(bool)<br>    security_style     = optional(string)<br>    kerberos_enabled   = optional(bool)<br>    restricted_actions = optional(list(string))<br>    deletion_policy    = optional(string)<br><br>    backup_policies          = optional(list(string))<br>    backup_vault             = optional(string)<br>    scheduled_backup_enabled = optional(bool, true)<br><br>    export_policy_rules = optional(map(object({<br>      allowed_clients       = optional(string)<br>      has_root_access       = optional(string)<br>      access_type           = optional(string) #Possible values are: READ_ONLY, READ_WRITE, READ_NONE<br>      nfsv3                 = optional(bool)<br>      nfsv4                 = optional(bool)<br>      kerberos5_read_only   = optional(bool)<br>      kerberos5_read_write  = optional(bool)<br>      kerberos5i_read_only  = optional(bool)<br>      kerberos5i_read_write = optional(bool)<br>      kerberos5p_read_only  = optional(bool)<br>      kerberos5p_read_write = optional(bool)<br>    })))<br><br>    snapshot_policy = optional(object({<br>      enabled = optional(bool, false)<br>      hourly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>      }))<br><br>      daily_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>      }))<br><br>      weekly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>        day               = optional(string)<br>      }))<br><br>      monthly_schedule = optional(object({<br>        snapshots_to_keep = optional(number)<br>        minute            = optional(number)<br>        hour              = optional(number)<br>        days_of_month     = optional(string)<br>      }))<br><br>    }))<br><br>  }))</pre> | `[]` | no |
 
 ## Outputs
 
@@ -169,8 +201,6 @@ If you already have a Storage Pool created, set `create_pool` to `false` and pro
 ## storage_volumes details
 Provide list of storage volumes to create. Each volume requires `name`, `size`, `share_name` and protocols. Other fields are optional.
 
-
-
 ## Requirements
 
 These sections describe requirements for using this module.
@@ -180,7 +210,7 @@ These sections describe requirements for using this module.
 The following dependencies must be available:
 
 - [Terraform][terraform] v1.3+
-- [Terraform Provider for GCP][terraform-provider-gcp] plugin v5.15+
+- [Terraform Provider for GCP][terraform-provider-gcp] plugin v5.33+
 
 ### Service Account
 

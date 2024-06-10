@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 1.3.0"
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 5.33, < 6"
-    }
-  }
-  provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-netapp-volumes/v0.3.0"
-  }
+variable "project_id" {
+  description = "The ID of the project in which to provision resources."
+  type        = string
+}
+
+variable "network_name" {
+  description = "The ID of the network in which to provision resources."
+  type        = string
+  default     = "backup-netapp"
+}
+
+variable "region" {
+  default     = "us-central1"
+  description = "Location of the resources"
+  type        = string
 }
