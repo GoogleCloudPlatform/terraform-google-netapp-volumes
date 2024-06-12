@@ -7,9 +7,7 @@ This example illustrates how to use the `netapp-volume` module. It creates a Net
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| network\_name | The ID of the network in which to provision resources. | `string` | `"backup-netapp"` | no |
 | project\_id | The ID of the project in which to provision resources. | `string` | n/a | yes |
-| region | Location of the resources | `string` | `"us-central1"` | no |
 
 ## Outputs
 

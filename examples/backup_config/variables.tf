@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,5 @@
 
 variable "project_id" {
   description = "The ID of the project in which to provision resources."
-  type        = string
-}
-
-variable "network_name" {
-  description = "The ID of the network in which to provision resources."
-  type        = string
-  default     = "backup-netapp"
-}
-
-variable "region" {
-  default     = "us-central1"
-  description = "Location of the resources"
   type        = string
 }

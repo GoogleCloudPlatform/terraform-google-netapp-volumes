@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 # Create Network with a subnetwork and private service access for both netapp.servicenetworking.goog and servicenetworking.googleapis.com
 
 resource "google_compute_network" "default" {
-  name                    = var.network_name
+  name                    = "backup-netapp"
   project                 = var.project_id
   auto_create_subnetworks = false
   description             = "test network"
 }
 
 resource "google_compute_subnetwork" "subnetwork" {
-  name                     = "subnet-${var.region}"
+  name                     = "subnet-us-central1"
   ip_cidr_range            = "10.0.0.0/24"
-  region                   = var.region
+  region                   = "us-central1"
   project                  = var.project_id
   network                  = google_compute_network.default.self_link
   private_ip_google_access = true
@@ -78,7 +78,7 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
 resource "google_netapp_backup_policy" "backup_policy" {
   project              = var.project_id
   name                 = "netapp-backup-policy"
-  location             = var.region
+  location             = "us-central1"
   daily_backup_limit   = 2
   weekly_backup_limit  = 0
   monthly_backup_limit = 0
@@ -93,7 +93,7 @@ resource "google_netapp_backup_policy" "backup_policy" {
 
 resource "google_netapp_backup_vault" "backup_vault" {
   project  = var.project_id
-  location = var.region
+  location = "us-central1"
   name     = "tf-test-vault"
 }
 
@@ -104,7 +104,7 @@ module "netapp_volumes" {
   version = "~> 1.0"
 
   project_id = var.project_id
-  location   = var.region
+  location   = "us-central1"
 
   storage_pool = {
     create_pool   = true
@@ -112,7 +112,7 @@ module "netapp_volumes" {
     size          = "2048"
     service_level = "PREMIUM"
     ldap_enabled  = false
-    network_name  = var.network_name
+    network_name  = "backup-netapp"
     labels = {
       pool_env = "test"
     }
