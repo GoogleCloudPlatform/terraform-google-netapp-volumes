@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,14 +18,15 @@
 # Make will use bash instead of sh
 SHELL := /usr/bin/env bash
 
-DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.19
+DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.21
 DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
+DOCKER_BIN ?= docker
 
 # Enter docker container for local development
 .PHONY: docker_run
 docker_run:
-	docker run --rm -it \
+	$(DOCKER_BIN) run --rm -it \
 		-e SERVICE_ACCOUNT_JSON \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
@@ -34,7 +35,7 @@ docker_run:
 # Execute prepare tests within the docker container
 .PHONY: docker_test_prepare
 docker_test_prepare:
-	docker run --rm -it \
+	$(DOCKER_BIN) run --rm -it \
 		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
@@ -46,7 +47,7 @@ docker_test_prepare:
 # Clean up test environment within the docker container
 .PHONY: docker_test_cleanup
 docker_test_cleanup:
-	docker run --rm -it \
+	$(DOCKER_BIN) run --rm -it \
 		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
@@ -58,7 +59,7 @@ docker_test_cleanup:
 # Execute integration tests within the docker container
 .PHONY: docker_test_integration
 docker_test_integration:
-	docker run --rm -it \
+	$(DOCKER_BIN) run --rm -it \
 		-e SERVICE_ACCOUNT_JSON \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
@@ -67,8 +68,8 @@ docker_test_integration:
 # Execute lint tests within the docker container
 .PHONY: docker_test_lint
 docker_test_lint:
-	docker run --rm -it \
-		-e EXCLUDE_LINT_DIRS \
+	$(DOCKER_BIN) run --rm -it \
+		-e ENABLE_PARALLEL=1 \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/usr/local/bin/test_lint.sh
@@ -76,11 +77,25 @@ docker_test_lint:
 # Generate documentation
 .PHONY: docker_generate_docs
 docker_generate_docs:
-	docker run --rm -it \
+	$(DOCKER_BIN) run --rm -it \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/bin/bash -c 'source /usr/local/bin/task_helper_functions.sh && generate_docs'
 
+# Generate files from autogen
+.PHONY: docker_generate_modules
+docker_generate_modules:
+	$(DOCKER_BIN) run --rm -it \
+                -v "$(CURDIR)":/workspace \
+                $(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+                /bin/bash -c 'source /usr/local/bin/task_helper_functions.sh && generate_modules'
+
 # Alias for backwards compatibility
 .PHONY: generate_docs
 generate_docs: docker_generate_docs
+
+.PHONY: generate
+generate: docker_generate_modules
+
+.PHONY: build
+build: docker_generate_modules docker_generate_docs

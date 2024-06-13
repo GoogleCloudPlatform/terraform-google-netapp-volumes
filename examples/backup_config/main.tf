@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 # Create Network with a subnetwork and private service access for both netapp.servicenetworking.goog and servicenetworking.googleapis.com
 
 resource "google_compute_network" "default" {
-  name                    = var.network_name
+  name                    = "backup-netapp"
   project                 = var.project_id
   auto_create_subnetworks = false
   description             = "test network"
 }
 
 resource "google_compute_subnetwork" "subnetwork" {
-  name                     = "subnet-${var.region}"
+  name                     = "subnet-us-central1"
   ip_cidr_range            = "10.0.0.0/24"
-  region                   = var.region
+  region                   = "us-central1"
   project                  = var.project_id
   network                  = google_compute_network.default.self_link
   private_ip_google_access = true
@@ -34,7 +34,7 @@ resource "google_compute_subnetwork" "subnetwork" {
 
 resource "google_compute_global_address" "private_ip_alloc" {
   project       = var.project_id
-  name          = "psa"
+  name          = "psa-backup"
   address_type  = "INTERNAL"
   purpose       = "VPC_PEERING"
   address       = "10.10.0.0"
@@ -53,7 +53,7 @@ resource "google_service_networking_connection" "vpc_connection" {
 
 resource "google_compute_global_address" "netapp_private_svc_ip" {
   project       = var.project_id
-  name          = "netapp-psa"
+  name          = "netapp-psa-backup"
   address_type  = "INTERNAL"
   purpose       = "VPC_PEERING"
   address       = "10.11.0.0"
@@ -73,14 +73,38 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
   deletion_policy = "ABANDON"
 }
 
-## 1 - Create Storage Pool with 2 Volumes
+## Create backup policy
+
+resource "google_netapp_backup_policy" "backup_policy" {
+  project              = var.project_id
+  name                 = "netapp-backup-policy"
+  location             = "us-central1"
+  daily_backup_limit   = 2
+  weekly_backup_limit  = 0
+  monthly_backup_limit = 0
+  enabled              = true
+  description          = "TF test backup schedule"
+  labels = {
+    "env" = "test"
+  }
+}
+
+## Create Storage Vault
+
+resource "google_netapp_backup_vault" "backup_vault" {
+  project  = var.project_id
+  location = "us-central1"
+  name     = "tf-test-vault"
+}
+
+## Create Storage Pool with 2 Volumes
 
 module "netapp_volumes" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
   version = "~> 1.0"
 
   project_id = var.project_id
-  location   = var.region
+  location   = "us-central1"
 
   storage_pool = {
     create_pool   = true
@@ -88,7 +112,7 @@ module "netapp_volumes" {
     size          = "2048"
     service_level = "PREMIUM"
     ldap_enabled  = false
-    network_name  = var.network_name
+    network_name  = "backup-netapp"
     labels = {
       pool_env = "test"
     }
@@ -103,6 +127,8 @@ module "netapp_volumes" {
       size            = "100"
       protocols       = ["NFSV3"]
       deletion_policy = "FORCE"
+      backup_policies = [google_netapp_backup_policy.backup_policy.id]
+      backup_vault    = google_netapp_backup_vault.backup_vault.id
       snapshot_policy = {
         enabled = true
         monthly_schedule = {
@@ -139,90 +165,5 @@ module "netapp_volumes" {
   depends_on = [
     google_service_networking_connection.vpc_connection,
     google_service_networking_connection.netapp_vpc_connection,
-  ]
-}
-
-
-## 2 - Create Storage Pool without any volume
-
-module "storage_pool_only" {
-  source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
-
-
-  project_id = var.project_id
-  location   = var.region
-
-  storage_pool = {
-    create_pool   = true
-    name          = "test-pool-2"
-    size          = "2048"
-    service_level = "PREMIUM"
-    ldap_enabled  = false
-    network_name  = var.network_name
-    labels = {
-      pool_env = "test"
-    }
-    description = "test storage pool only"
-  }
-
-  depends_on = [
-    google_service_networking_connection.vpc_connection,
-    google_service_networking_connection.netapp_vpc_connection,
-  ]
-}
-
-
-## 3 - Create storage volume in the storage pool already created
-
-module "volumes_only" {
-  source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
-
-
-  project_id = module.netapp_volumes.storage_pool.project
-  location   = module.netapp_volumes.storage_pool.location
-
-  # name of an existing storage pool
-  storage_pool = {
-    create_pool = false
-    name        = module.storage_pool_only.storage_pool.name
-  }
-
-  storage_volumes = [
-    # test-volume-3
-    {
-      name            = "test-volume-3"
-      share_name      = "test-volume-3"
-      size            = "100"
-      protocols       = ["NFSV3"]
-      deletion_policy = "FORCE"
-      snapshot_policy = {
-        enabled = true
-        daily_schedule = {
-          snapshots_to_keep = 1
-          minute            = 21
-          hour              = 4
-        }
-        weekly_schedule = {
-          snapshots_to_keep = 2
-          minute            = 1
-          hour              = 3
-          day               = "Sunday"
-        }
-      }
-      export_policy_rules = {
-        test = {
-          allowed_clients = "10.0.0.0/24,10.100.0.0/24"
-          access_type     = "READ_WRITE"
-          nfsv3           = true
-          has_root_access = true
-        }
-      }
-    },
-  ]
-
-  depends_on = [
-    module.netapp_volumes,
   ]
 }

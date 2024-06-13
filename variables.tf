@@ -63,6 +63,10 @@ variable "storage_volumes" {
     restricted_actions = optional(list(string))
     deletion_policy    = optional(string)
 
+    backup_policies          = optional(list(string))
+    backup_vault             = optional(string)
+    scheduled_backup_enabled = optional(bool, true)
+
     export_policy_rules = optional(map(object({
       allowed_clients       = optional(string)
       has_root_access       = optional(string)
@@ -108,4 +112,5 @@ variable "storage_volumes" {
 
   }))
   description = "List of Storage Volumes"
+  default     = []
 }

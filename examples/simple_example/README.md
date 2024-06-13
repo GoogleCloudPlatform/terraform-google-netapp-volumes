@@ -1,6 +1,10 @@
 # Simple NetApp Example
 
-This example illustrates how to use the `netapp-volume` module. It creates a NetApp Storage Pool and 2 Volumes in that Storage Pool. It also creates third volume by calling module and proving name of the storage pool created using the first module call.
+This example illustrates how to use the `netapp-volume` module to create storage pool and volumes.
+
+1) First module call creates a pool with 2 volumes in it.
+2) Second module call creates another storage pool without any volime
+3) Third module call creates a volume in the storage pool created in step 2
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

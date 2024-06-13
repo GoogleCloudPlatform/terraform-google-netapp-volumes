@@ -38,6 +38,8 @@ func TestSimpleNetApp(t *testing.T) {
 		volume2ID := netapp.GetStringOutput("storage_volume2_id")
 		volume3Name := netapp.GetStringOutput("storage_volume3_name")
 		volume3ID := netapp.GetStringOutput("storage_volume3_id")
+		// backupPolicyId := netapp.GetStringOutput("backup_policy_id")
+		// backupVaultId := netapp.GetStringOutput("backup_vault_id")
 
 		sp := gcloud.Runf(t, "netapp storage-pools describe %s --location %s --project %s", storagePoolName, location, projectID)
 
@@ -53,8 +55,8 @@ func TestSimpleNetApp(t *testing.T) {
 		assert.Equal(volume1ID, sv1.Get("name").String(), "has expected name")
 		assert.Equal("PREMIUM", sv1.Get("serviceLevel").String(), "has expected serviceLevel")
 		assert.Equal("1", sv1.Get("snapshotPolicy.dailySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
-		assert.Equal("23", sv1.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
 		assert.Equal("45", sv1.Get("snapshotPolicy.dailySchedule.minute").String(), "has expected minute")
+		assert.Equal("5", sv1.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
 
 		sv2 := gcloud.Runf(t, "netapp volumes describe %s --location %s --project %s", volume2Name, location, projectID)
 
@@ -70,12 +72,15 @@ func TestSimpleNetApp(t *testing.T) {
 		assert.Equal(volume3ID, sv3.Get("name").String(), "has expected name")
 		assert.Equal("PREMIUM", sv3.Get("serviceLevel").String(), "has expected serviceLevel")
 		assert.Equal("1", sv3.Get("snapshotPolicy.dailySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
-		assert.Equal("21", sv3.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
 		assert.Equal("21", sv3.Get("snapshotPolicy.dailySchedule.minute").String(), "has expected minute")
-		assert.Equal("1", sv3.Get("snapshotPolicy.weeklySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
-		assert.Equal("1", sv3.Get("snapshotPolicy.weeklySchedule.hour").String(), "has expected hour")
+		assert.Equal("4", sv3.Get("snapshotPolicy.dailySchedule.hour").String(), "has expected hour")
+		assert.Equal("2", sv3.Get("snapshotPolicy.weeklySchedule.snapshotsToKeep").String(), "has expected snapshotsToKeep")
 		assert.Equal("1", sv3.Get("snapshotPolicy.weeklySchedule.minute").String(), "has expected minute")
-		assert.Equal("Monday", sv3.Get("snapshotPolicy.weeklySchedule.day").String(), "has expected day")
+		assert.Equal("3", sv3.Get("snapshotPolicy.weeklySchedule.hour").String(), "has expected hour")
+		assert.Equal("Sunday", sv3.Get("snapshotPolicy.weeklySchedule.day").String(), "has expected day")
+		// assert.Equal(backupPolicyId, sv3.Get("backupConfig.backupPolicies").Array()[0].String(), "has expected backup policy")
+		// assert.Equal(backupVaultId, sv3.Get("backupConfig.backupVault").String(), "has expected backup vault")
+		// assert.True(sv3.Get("backupConfig.scheduledBackupEnabled").Bool(), "has scheduled backup enabled")
 
 	})
 	netapp.Test()

@@ -54,6 +54,15 @@ resource "google_netapp_volume" "storage_volumes" {
   restricted_actions = lookup(each.value, "restricted_actions", null)
   deletion_policy    = lookup(each.value, "deletion_policy", null)
 
+  dynamic "backup_config" {
+    for_each = each.value.backup_policies == null ? [] : ["backup_config"]
+    content {
+      backup_policies          = each.value.backup_policies
+      backup_vault             = each.value.backup_vault
+      scheduled_backup_enabled = each.value.scheduled_backup_enabled
+    }
+  }
+
   dynamic "snapshot_policy" {
     for_each = each.value.snapshot_policy != null ? ["volume_snapshot_policy"] : []
     content {
@@ -91,7 +100,7 @@ resource "google_netapp_volume" "storage_volumes" {
           snapshots_to_keep = lookup(each.value.snapshot_policy.monthly_schedule, "snapshots_to_keep")
           minute            = lookup(each.value.snapshot_policy.monthly_schedule, "minute")
           hour              = lookup(each.value.snapshot_policy.monthly_schedule, "hour")
-          days_of_month     = lookup(each.value.snapshot_policy.monthly_schedule, "days_of_month ")
+          days_of_month     = lookup(each.value.snapshot_policy.monthly_schedule, "days_of_month")
         }
       }
 
