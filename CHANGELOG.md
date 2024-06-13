@@ -8,6 +8,23 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [1.0.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v0.3.0...v1.0.0) (2024-06-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **TPG>=5.33:** added support for volume backup ([#28](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/28))
+
+### Features
+
+* Add Support to Monthly Snapshots ([#27](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/27)) ([c98ecbc](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/c98ecbc521ad7ca9f2156bd3e7ca0afa793a15aa))
+* **TPG>=5.33:** added support for volume backup ([#28](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/28)) ([71caf47](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/71caf47da672b036af2cac88a287c9a643365014))
+
+
+### Bug Fixes
+
+* added smb example ([#21](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/21)) ([32e140a](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/32e140ae8774c8ccb4438b18078503f1f6f52b98))
+
 ## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v0.2.0...v0.3.0) (2024-03-05)
 
 

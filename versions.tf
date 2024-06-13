@@ -23,6 +23,6 @@ terraform {
     }
   }
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-netapp-volumes/v0.3.0"
+    module_name = "blueprints/terraform/terraform-google-netapp-volumes/v1.0.0"
   }
 }
