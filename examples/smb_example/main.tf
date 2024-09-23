@@ -111,7 +111,7 @@ resource "google_netapp_active_directory" "smb_test_active_directory" {
 ## Create Storage Pool and 1 Volume
 module "netapp_volumes" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
   project_id = var.project_id
   location   = var.region
