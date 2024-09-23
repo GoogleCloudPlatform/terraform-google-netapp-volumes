@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [1.1.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v1.0.0...v1.1.0) (2024-09-16)
+
+
+### Features
+
+* **deps:** Update Terraform google to v6 ([#36](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/36)) ([821d867](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/821d86713fc3a55fe054ead9c3dfdcc1794fbc52))
+
 ## [1.0.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v0.3.0...v1.0.0) (2024-06-13)
 
 
