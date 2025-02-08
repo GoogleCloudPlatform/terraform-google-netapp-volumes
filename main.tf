@@ -21,17 +21,21 @@ data "google_compute_network" "vpc_network" {
 }
 
 resource "google_netapp_storage_pool" "storage_pool" {
-  count            = var.storage_pool.create_pool ? 1 : 0
-  project          = var.project_id
-  location         = var.location
-  name             = var.storage_pool.name
-  service_level    = var.storage_pool.service_level
-  capacity_gib     = var.storage_pool.size
-  network          = data.google_compute_network.vpc_network[0].id
-  description      = lookup(var.storage_pool, "description", null)
-  labels           = merge(var.common_labels, var.storage_pool.labels)
-  ldap_enabled     = var.storage_pool.ldap_enabled
-  active_directory = lookup(var.storage_pool, "ad_id", null)
+  count              = var.storage_pool.create_pool ? 1 : 0
+  project            = var.project_id
+  location           = var.location
+  name               = var.storage_pool.name
+  service_level      = var.storage_pool.service_level
+  capacity_gib       = var.storage_pool.size
+  network            = data.google_compute_network.vpc_network[0].id
+  description        = lookup(var.storage_pool, "description", null)
+  labels             = merge(var.common_labels, var.storage_pool.labels)
+  ldap_enabled       = var.storage_pool.ldap_enabled
+  active_directory   = lookup(var.storage_pool, "ad_id", null)
+  kms_config         = lookup(var.storage_pool, "kms_config", null)
+  zone               = lookup(var.storage_pool, "zone", null)
+  replica_zone       = lookup(var.storage_pool, "replica_zone", null)
+  allow_auto_tiering = lookup(var.storage_pool, "allow_auto_tiering", null)
 }
 
 
@@ -53,6 +57,8 @@ resource "google_netapp_volume" "storage_volumes" {
   kerberos_enabled   = lookup(each.value, "kerberos_enabled", null)
   restricted_actions = lookup(each.value, "restricted_actions", null)
   deletion_policy    = lookup(each.value, "deletion_policy", null)
+  multiple_endpoints = lookup(each.value, "multiple_endpoints", null)
+  large_capacity     = lookup(each.value, "large_capacity", null)
 
   dynamic "backup_config" {
     for_each = each.value.backup_policies == null ? [] : ["backup_config"]
@@ -128,4 +134,21 @@ resource "google_netapp_volume" "storage_volumes" {
       }
     }
   }
+
+  dynamic "restore_parameters" {
+    for_each = each.value.restore_parameters == null ? [] : ["restore_parameters"]
+    content {
+      source_snapshot = lookup(each.value.restore_parameters, "source_snapshot")
+      source_backup   = lookup(each.value.restore_parameters, "source_backup")
+    }
+  }
+
+  dynamic "tiering_policy" {
+    for_each = each.value.tiering_policy == null ? [] : ["tiering_policy"]
+    content {
+      cooling_threshold_days = lookup(each.value.restore_parameters, "cooling_threshold_days")
+      tier_action            = lookup(each.value.restore_parameters, "tier_action")
+    }
+  }
+
 }

@@ -101,7 +101,7 @@ resource "google_netapp_backup_vault" "backup_vault" {
 
 module "netapp_volumes" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   project_id = var.project_id
   location   = "us-central1"
