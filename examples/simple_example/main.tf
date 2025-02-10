@@ -77,7 +77,7 @@ resource "google_service_networking_connection" "netapp_vpc_connection" {
 
 module "netapp_volumes" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   project_id = var.project_id
   location   = var.region
@@ -147,7 +147,7 @@ module "netapp_volumes" {
 
 module "storage_pool_only" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
 
   project_id = var.project_id
@@ -177,7 +177,7 @@ module "storage_pool_only" {
 
 module "volumes_only" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
 
   project_id = module.netapp_volumes.storage_pool.project

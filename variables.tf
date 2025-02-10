@@ -44,6 +44,10 @@ variable "storage_pool" {
     labels             = optional(map(string), {})
     ldap_enabled       = optional(bool, false)
     ad_id              = optional(string)
+    kms_config         = optional(string)
+    zone               = optional(string)
+    replica_zone       = optional(string)
+    allow_auto_tiering = optional(bool)
   })
 }
 
@@ -66,6 +70,11 @@ variable "storage_volumes" {
     backup_policies          = optional(list(string))
     backup_vault             = optional(string)
     scheduled_backup_enabled = optional(bool, true)
+
+    multiple_endpoints = optional(bool)
+    large_capacity     = optional(bool)
+
+
 
     export_policy_rules = optional(map(object({
       allowed_clients       = optional(string)
@@ -108,6 +117,16 @@ variable "storage_volumes" {
         days_of_month     = optional(string)
       }))
 
+    }))
+
+    restore_parameters = optional(object({
+      source_snapshot = optional(string)
+      source_backup   = optional(string)
+    }))
+
+    tiering_policy = optional(object({
+      cooling_threshold_days = number
+      tier_action            = string
     }))
 
   }))
