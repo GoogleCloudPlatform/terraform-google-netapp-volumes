@@ -49,10 +49,6 @@ variable "storage_pool" {
     replica_zone       = optional(string)
     allow_auto_tiering = optional(bool)
   })
-  validation {
-    condition     = contains(["PREMIUM", "EXTREME", "STANDARD", "FLEX"], var.storage_pool.service_level)
-    error_message = "service_level must be one of [PREMIUM, EXTREME, STANDARD, FLEX]"
-  }
 }
 
 variable "storage_volumes" {
