@@ -8,6 +8,17 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [2.0.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v1.1.0...v2.0.0) (2025-02-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **TPG>6.19:** added zone, replica_zone, allow_auto_tiering, multiple_endpoints, large_capacity, restore_parameters ([#47](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/47))
+
+### Features
+
+* **TPG>6.19:** added zone, replica_zone, allow_auto_tiering, multiple_endpoints, large_capacity, restore_parameters ([#47](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/47)) ([6d07c94](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/6d07c94c1f70ee465143dc5f8672d0b3f07d3dd4))
+
 ## [1.1.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v1.0.0...v1.1.0) (2024-09-16)
 
 
