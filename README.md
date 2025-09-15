@@ -21,7 +21,7 @@ Functional examples are included in the [examples](./examples/) directory. Basic
 ```hcl
 module "netapp_pool_volume" {
   source  = "GoogleCloudPlatform/netapp-volumes/google"
-  version = "~> 2.0"
+  version = "~> 2.1"
 
   project_id         = "test-project-id"
   location           = "us-central1"
