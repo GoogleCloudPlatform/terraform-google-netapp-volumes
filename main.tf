@@ -146,8 +146,8 @@ resource "google_netapp_volume" "storage_volumes" {
   dynamic "tiering_policy" {
     for_each = each.value.tiering_policy == null ? [] : ["tiering_policy"]
     content {
-      cooling_threshold_days = lookup(each.value.restore_parameters, "cooling_threshold_days")
-      tier_action            = lookup(each.value.restore_parameters, "tier_action")
+      cooling_threshold_days = lookup(each.value.tiering_policy, "cooling_threshold_days")
+      tier_action            = lookup(each.value.tiering_policy, "tier_action")
     }
   }
 
