@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [2.1.1](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v2.1.0...v2.1.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* correct variable reference in tiering_policy dynamic block ([#63](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/issues/63)) ([ca711de](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/commit/ca711defcd00e5af572b244c0075a410870284b4))
+
 ## [2.1.0](https://github.com/GoogleCloudPlatform/terraform-google-netapp-volumes/compare/v2.0.0...v2.1.0) (2025-09-15)
 
 
